@@ -1,0 +1,28 @@
+# runtime data
+data/
+.e2e-data/
+
+# go build output
+dist/
+
+# frontend
+web/node_modules/
+web/dist/
+web/.vite/
+web/test-results/
+web/playwright-report/
+internal/webui/dist/*
+
+# go:embed 同步产物
+internal/plugins/builtin/assets/
+
+# android
+android/.gradle/
+android/app/build/
+android/local.properties
+android/app/libs/*.aar
+*.apk
+*.aab
+
+# mac
+.DS_Store

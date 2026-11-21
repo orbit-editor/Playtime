@@ -233,7 +233,7 @@ Windows 默认放在 exe 同级的 data/（便携，拷走整个文件夹等于�
     POST /api/redeem     {student_id, reward_id}
     GET  /api/events                         SSE：notice / flowers / redeems / plugins 变更
     GET  /join?t=                            手机入口
-    POST /auth/pin       {pin}               换取会话
+    POST /api/auth/pin   {pin}               换取会话
     GET/POST/PUT/DELETE /api/admin/{notices,students,rewards,plugins}
     POST /api/admin/redeems/:id/decide {approve}
     GET  /api/admin/backup                   下载 zip
