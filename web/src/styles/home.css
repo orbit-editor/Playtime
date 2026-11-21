@@ -1,0 +1,174 @@
+/* =========================================================
+   大屏首页
+   ========================================================= */
+
+.screen-home {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px 48px 92px;
+}
+
+.home-header {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  min-height: 96px;
+}
+
+.home-brand {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-width: 0;
+}
+
+.home-brand__mark {
+  display: grid;
+  flex: none;
+  width: 66px;
+  height: 66px;
+  place-items: center;
+  border-radius: 22px;
+  background: linear-gradient(145deg, #e7f2ea 0%, #f7ecd4 100%);
+  color: var(--green-deep);
+  box-shadow: inset 0 0 0 1.5px rgba(63, 143, 99, 0.12);
+}
+
+.home-brand__copy {
+  min-width: 0;
+}
+
+.home-brand__line {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.home-brand__name {
+  max-width: 720px;
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 44px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-brand__hello {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--flower-soft);
+  color: var(--flower-deep);
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.home-brand__warn {
+  flex: none;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--sun-soft);
+  color: var(--sun-deep);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.home-brand__sub {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 18px;
+  letter-spacing: 0.01em;
+}
+
+.home-clock {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  text-align: right;
+}
+
+.home-clock__date {
+  color: var(--muted);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.home-clock__time {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+  font-size: 34px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+
+.home-clock__time svg {
+  color: var(--sun-deep);
+}
+
+.home-main {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(0, 1fr) 480px;
+  gap: 26px;
+  min-height: 0;
+}
+
+.home-left {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* 接口暂时连不上时的提示条，与通知条同高，不挤动版面 */
+.offline-bar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 14px;
+  height: 72px;
+  padding: 0 22px;
+  border: 1.5px solid #f0dfb7;
+  border-radius: 18px;
+  background: linear-gradient(90deg, #fff4dc 0%, #fffdf7 75%);
+}
+
+.offline-bar__icon {
+  display: grid;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border-radius: 14px;
+  background: #fff;
+  color: var(--sun-deep);
+}
+
+.offline-bar__text {
+  flex: 1;
+  color: var(--muted-strong);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.offline-bar__retry {
+  flex: none;
+}

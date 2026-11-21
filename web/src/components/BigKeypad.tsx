@@ -13,18 +13,15 @@ type Key =
   | { kind: 'clear' }
   | { kind: 'confirm' };
 
+function charKey(value: string): Key {
+  return { kind: 'char', value };
+}
+
 const ROWS: Key[][] = [
-  ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'].map((value) => ({ kind: 'char', value })),
-  ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'].map((value) => ({ kind: 'char', value })),
-  [
-    ...['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'].map((value) => ({ kind: 'char', value })),
-    { kind: 'backspace' },
-  ],
-  [
-    ...['Z', 'X', 'C', 'V', 'B', 'N', 'M'].map((value) => ({ kind: 'char', value })),
-    { kind: 'clear' },
-    { kind: 'confirm' },
-  ],
+  ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'].map(charKey),
+  ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'].map(charKey),
+  [...['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'].map(charKey), { kind: 'backspace' }],
+  [...['Z', 'X', 'C', 'V', 'B', 'N', 'M'].map(charKey), { kind: 'clear' }, { kind: 'confirm' }],
 ];
 
 /** 4 行 × 10 列的大键盘，每个键都够一根手指按。 */

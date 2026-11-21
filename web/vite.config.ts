@@ -12,6 +12,7 @@ export default defineConfig({
     proxy: {
       '/api': { target: 'http://127.0.0.1:8730', changeOrigin: true },
       '/ext': { target: 'http://127.0.0.1:8730', changeOrigin: true },
+      '/join': { target: 'http://127.0.0.1:8730', changeOrigin: true },
     },
   },
   preview: { host: '127.0.0.1', port: 4173 },

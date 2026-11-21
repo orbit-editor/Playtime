@@ -12,6 +12,7 @@ import { useToast } from '../components/Toast';
 import { useClaim } from '../lib/claim';
 import { formatClock, formatDateCN, greetingFor } from '../lib/format';
 import {
+  gamesOf,
   useBootstrap,
   useLeaderboard,
   useStudentFlowers,
@@ -59,11 +60,11 @@ export function ScreenHome() {
   const pickedRef = useRef(false);
 
   const degraded = bootstrapResource.degraded;
-  const plugins = bootstrap ? bootstrap.plugins : [];
+  const games = gamesOf(bootstrap);
   const rosterEmpty =
     !degraded && bootstrap !== null && bootstrap.stats.students === 0;
-  const className = bootstrap?.class?.name ?? '我们的教室';
-  const school = bootstrap?.class?.school ?? '';
+  const className = bootstrap?.class?.name?.trim() || '我们的教室';
+  const school = bootstrap?.class?.school?.trim() ?? '';
   const notice = bootstrap?.notice ?? null;
   const noticesCount = bootstrap?.notices_count ?? 0;
 
@@ -87,6 +88,10 @@ export function ScreenHome() {
 
   const handlePlay = useCallback(
     (plugin: Plugin) => {
+      if (rosterEmpty) {
+        toast.show('名单还没来，先请老师导入名单吧', 'info');
+        return;
+      }
       if (claim) {
         navigate('/play/' + encodeURIComponent(plugin.id));
         return;
@@ -95,7 +100,7 @@ export function ScreenHome() {
       setPendingPlugin(plugin);
       setSheetOpen(true);
     },
-    [claim, navigate],
+    [claim, navigate, rosterEmpty, toast],
   );
 
   const handlePicked = useCallback(
@@ -170,9 +175,8 @@ export function ScreenHome() {
       <main className="home-main">
         <div className="home-left">
           <GameWall
-            plugins={plugins}
+            games={games}
             loading={bootstrapResource.loading}
-            emptyRoster={rosterEmpty}
             onPlay={handlePlay}
           />
           <LeaderboardPreview

@@ -7,6 +7,8 @@ import './styles/components.css';
 import './styles/home.css';
 import './styles/identify.css';
 import './styles/screens.css';
+import './styles/workbench.css';
+import './styles/mobile.css';
 
 const container = document.getElementById('root');
 if (!container) {

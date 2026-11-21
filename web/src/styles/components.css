@@ -578,6 +578,11 @@
   grid-template-columns: minmax(0, 1fr);
 }
 
+/* 游戏数量是单数时，最后一张横过来铺满，别留一个空位。 */
+.game-wall__grid:not(.game-wall__grid--solo) > .game-card:last-child:nth-child(odd):not(.game-card--skeleton) {
+  grid-column: 1 / -1;
+}
+
 .game-wall__empty {
   display: grid;
   flex: 1;
@@ -590,11 +595,13 @@
 
 .game-card {
   position: relative;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 26px;
   min-width: 0;
   min-height: 0;
-  padding: 22px 26px 20px;
+  padding: 28px 32px;
   overflow: hidden;
   border: 0;
   border-radius: 28px;
@@ -618,14 +625,12 @@
 }
 
 .game-card__art {
-  position: absolute;
-  top: 22px;
-  left: 26px;
+  position: relative;
   display: grid;
-  width: 64px;
-  height: 64px;
+  width: 96px;
+  height: 96px;
   place-items: center;
-  border-radius: 20px;
+  border-radius: 24px;
   background: linear-gradient(145deg, var(--green-soft) 0%, #f6e8cb 100%);
   color: var(--green-deep);
 }
@@ -651,9 +656,8 @@
 .game-card__copy {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
   min-width: 0;
-  padding-left: 82px;
 }
 
 .game-card__eyebrow {
@@ -666,7 +670,7 @@
 .game-card__name {
   overflow: hidden;
   color: var(--ink);
-  font-size: 27px;
+  font-size: 31px;
   font-weight: 800;
   letter-spacing: 0.01em;
   line-height: 1.25;
@@ -678,7 +682,7 @@
   display: -webkit-box;
   overflow: hidden;
   color: var(--muted-strong);
-  font-size: 17px;
+  font-size: 19px;
   line-height: 1.45;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -694,19 +698,28 @@
   display: inline-flex;
   flex: none;
   align-items: center;
-  align-self: flex-start;
-  gap: 6px;
-  margin-top: auto;
-  padding-top: 10px;
+  justify-self: end;
+  gap: 8px;
+  min-height: 56px;
+  padding: 0 24px;
+  border-radius: var(--radius-pill);
+  background: var(--green-soft);
   color: var(--green-deep);
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 800;
+  transition: background-color 0.16s var(--ease-out);
+}
+
+.game-card:hover .game-card__play {
+  background: #dcece1;
 }
 
 /* 只有一个游戏：做成一张大海报 */
 .game-card--hero {
+  display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
   gap: 38px;
   padding: 36px 40px;
   background:
@@ -739,7 +752,8 @@
 }
 
 .game-card--hero .game-card__copy {
-  flex: 1;
+  flex: 0 1 auto;
+  max-width: 620px;
   gap: 8px;
   padding-left: 0;
 }
@@ -765,7 +779,7 @@
 }
 
 .game-card--hero .game-card__play {
-  align-self: flex-end;
+  align-self: center;
   gap: 10px;
   min-height: 62px;
   margin-top: 0;
@@ -782,6 +796,8 @@
 }
 
 .game-card--skeleton {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   gap: 16px;
   background: #fff;

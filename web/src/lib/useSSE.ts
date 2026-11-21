@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 
 export type ServerEventHandler = (type: string, data: unknown) => void;
 
-const EVENT_TYPES = ['notice', 'flowers', 'students', 'plugins'] as const;
+const EVENT_TYPES = ['notice', 'flowers', 'students', 'plugins', 'rewards', 'redeems', 'class'] as const;
 
 /** 订阅 /api/events；断线后 3 秒重连。没有后端时安静地重试，不打断页面。 */
 export function useSSE(onEvent: ServerEventHandler, enabled = true): void {

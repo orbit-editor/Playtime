@@ -1,13 +1,12 @@
-import { ArrowRight, Calculator, Gamepad2, Puzzle, Sparkles, Users } from 'lucide-react';
+import { ArrowRight, Calculator, Gamepad2, Puzzle, Sparkles } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Empty } from './Empty';
 import { gradesLabel } from '../lib/format';
 import type { Plugin } from '../lib/types';
 
 export interface GameWallProps {
-  plugins: Plugin[];
+  games: Plugin[];
   loading?: boolean;
-  emptyRoster?: boolean;
   onPlay: (plugin: Plugin) => void;
 }
 
@@ -17,22 +16,12 @@ function iconFor(plugin: Plugin): LucideIcon {
   return Gamepad2;
 }
 
-export function GameWall({ plugins, loading = false, emptyRoster = false, onPlay }: GameWallProps) {
-  const visible = plugins.filter((plugin) => plugin.enabled !== false);
+export function GameWall({ games, loading = false, onPlay }: GameWallProps) {
+  const visible = games.filter((plugin) => plugin.enabled !== false);
   const solo = visible.length === 1;
 
   let body;
-  if (emptyRoster) {
-    body = (
-      <div className="game-wall__empty">
-        <Empty
-          icon={Users}
-          title="还没有名单，先请老师导入"
-          hint="名单来了，就能认领小红花，也能玩游戏啦"
-        />
-      </div>
-    );
-  } else if (loading && visible.length === 0) {
+  if (loading && visible.length === 0) {
     body = (
       <div className="game-wall__grid" aria-hidden="true">
         {[0, 1, 2].map((item) => (
@@ -105,7 +94,7 @@ export function GameWall({ plugins, loading = false, emptyRoster = false, onPlay
           <h2 className="game-wall__title">课间玩一玩</h2>
           <p className="game-wall__sub">挑一个喜欢的，点一下就开始</p>
         </div>
-        {visible.length > 0 && !emptyRoster ? (
+        {visible.length > 0 ? (
           <span className="game-wall__count">{visible.length} 个小游戏</span>
         ) : null}
       </div>

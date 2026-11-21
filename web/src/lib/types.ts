@@ -70,10 +70,18 @@ export interface Reward {
   pending: boolean;
 }
 
+export interface FlowerEntry {
+  delta: number;
+  reason: string;
+  at: string;
+}
+
 export interface StudentFlowers {
   balance: number;
   today: number;
   rewards: Reward[];
+  /** 最近几笔小红花记录，可能缺省。 */
+  recent?: FlowerEntry[];
 }
 
 export interface LeaderRow {

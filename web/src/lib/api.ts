@@ -94,6 +94,15 @@ export function toApiError(error: unknown): ApiError {
   return new ApiError(0, 'unknown', '出了点小问题');
 }
 
+function send<T>(method: string, path: string, body?: unknown): Promise<T> {
+  const init: RequestInit = { method, headers: BASE_HEADERS };
+  if (body !== undefined) {
+    init.headers = { ...BASE_HEADERS, 'Content-Type': 'application/json' };
+    init.body = JSON.stringify(body);
+  }
+  return request<T>(path, init);
+}
+
 export const api = {
   get<T>(path: string, params?: Query): Promise<T> {
     return request<T>(withQuery(path, params), {
@@ -102,11 +111,46 @@ export const api = {
     });
   },
   post<T>(path: string, body: unknown): Promise<T> {
-    return request<T>(path, {
-      method: 'POST',
-      headers: { ...BASE_HEADERS, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
+    return send<T>('POST', path, body);
+  },
+  put<T>(path: string, body: unknown): Promise<T> {
+    return send<T>('PUT', path, body);
+  },
+  patch<T>(path: string, body: unknown): Promise<T> {
+    return send<T>('PATCH', path, body);
+  },
+  delete<T>(path: string): Promise<T> {
+    return send<T>('DELETE', path);
+  },
+  /** 上传文件（multipart），用于导入备份。 */
+  async upload<T>(path: string, file: File, field = 'file'): Promise<T> {
+    const form = new FormData();
+    form.append(field, file);
+    let res: Response;
+    try {
+      res = await fetch(path, { method: 'POST', headers: BASE_HEADERS, body: form, credentials: 'same-origin' });
+    } catch {
+      throw new ApiError(0, 'offline', '教室的小助手没有连上');
+    }
+    if (!res.ok) {
+      const failure = await readFailure(res);
+      throw new ApiError(res.status, failure.code, failure.message);
+    }
+    return (await res.json()) as T;
+  },
+  /** 下载文件（备份 zip / 导出 CSV）。 */
+  async download(path: string): Promise<Blob> {
+    let res: Response;
+    try {
+      res = await fetch(path, { headers: BASE_HEADERS, credentials: 'same-origin' });
+    } catch {
+      throw new ApiError(0, 'offline', '教室的小助手没有连上');
+    }
+    if (!res.ok) {
+      const failure = await readFailure(res);
+      throw new ApiError(res.status, failure.code, failure.message);
+    }
+    return res.blob();
   },
 };
 

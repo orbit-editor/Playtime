@@ -3,6 +3,7 @@ import { apiCalls, toApiError, type ApiError } from './api';
 import type {
   Bootstrap,
   Leaderboard,
+  Plugin,
   StudentFlowers,
 } from './types';
 
@@ -50,25 +51,35 @@ export function useApi<T>(load: () => Promise<T>, deps: readonly unknown[]): Res
   return { data, loading, error, refresh };
 }
 
+const FALLBACK_GAMES: Plugin[] = [
+  {
+    id: 'math-sprint',
+    name: '口算闯关',
+    version: '1.0.0',
+    description: '一分钟口算，看看你能闯过几关。',
+    grades: [3, 4],
+    enabled: true,
+  },
+];
+
 export const FALLBACK_BOOTSTRAP: Bootstrap = {
   class: { name: '我们的教室', grade: 3, school: '' },
   configured: true,
   notice: null,
   notices_count: 0,
-  plugins: [
-    {
-      id: 'math-sprint',
-      name: '口算闯关',
-      version: '1.0.0',
-      description: '一分钟口算，看看你能闯过几关。',
-      grades: [3, 4],
-      enabled: true,
-    },
-  ],
+  games: FALLBACK_GAMES,
+  plugins: FALLBACK_GAMES,
   stats: { students: 0, flowers_today: 0, flowers_week: 0 },
   lan_urls: [],
   port: 8730,
 };
+
+/** 新版后端返回 games，旧版返回 plugins；两个字段都兼容。 */
+export function gamesOf(bootstrap: Bootstrap | null | undefined): Plugin[] {
+  if (!bootstrap) return [];
+  const list = bootstrap.games ?? bootstrap.plugins;
+  return Array.isArray(list) ? list : [];
+}
 
 export interface BootstrapResource extends Resource<Bootstrap> {
   degraded: boolean;

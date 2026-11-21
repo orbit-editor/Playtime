@@ -1,4 +1,4 @@
-import { App } from './App';
+import { App } from '../App';
 import { ErrorBoundary } from './ErrorBoundary';
 
 export function AppBoot() {
