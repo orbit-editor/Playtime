@@ -29,6 +29,7 @@ type Deps struct {
 	Port    int
 	Version string
 	WebFS   fs.FS
+	OnQuit  func()
 }
 
 // Server wires routes, sessions and static files.
@@ -102,6 +103,7 @@ func (s *Server) routes() {
 	mux.HandleFunc("POST /api/admin/plugins/upload", s.teacher(s.adminUpload))
 	mux.HandleFunc("PATCH /api/admin/plugins/{id}", s.teacher(s.adminTogglePlugin))
 	mux.HandleFunc("DELETE /api/admin/plugins/{id}", s.teacher(s.adminUninstallPlugin))
+	mux.HandleFunc("POST /api/admin/quit", s.teacher(s.adminQuit))
 	mux.HandleFunc("GET /api/admin/backup", s.teacher(s.adminBackup))
 	mux.HandleFunc("POST /api/admin/restore", s.teacher(s.adminRestore))
 
@@ -303,11 +305,11 @@ func withCSRF(next http.Handler) http.Handler {
 	})
 }
 
-// teacher guards the teacher desk.
+// teacher guards the teacher desk. 手机扫码进来的是 phone 会话，权限与老师相同。
 func (s *Server) teacher(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		role, ok := s.sessionRole(r)
-		if !ok || role != "teacher" {
+		if !ok || (role != "teacher" && role != "phone") {
 			Fail(w, http.StatusUnauthorized, "unauthorized", "请先输入班主任密码")
 			return
 		}

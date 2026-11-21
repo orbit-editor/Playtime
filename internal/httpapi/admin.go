@@ -380,7 +380,14 @@ func (s *Server) adminChangePIN(w http.ResponseWriter, r *http.Request) {
 		Fail(w, http.StatusBadRequest, "bad_request", "请求格式不对")
 		return
 	}
-	err := s.deps.Auth.ChangePIN(auth.NormalizePIN(req.Old), auth.NormalizePIN(req.New))
+	next := auth.NormalizePIN(req.New)
+	// 手机上改密码不带旧密码：会话已经证明是老师本人。
+	var err error
+	if auth.NormalizePIN(req.Old) == "" {
+		err = s.deps.Auth.SetPIN(next)
+	} else {
+		err = s.deps.Auth.ChangePIN(auth.NormalizePIN(req.Old), next)
+	}
 	switch {
 	case errors.Is(err, auth.ErrWeakPIN):
 		Fail(w, http.StatusBadRequest, "weak_pin", "新密码要是 4 位数字")
@@ -485,4 +492,15 @@ func (s *Server) adminStats(w http.ResponseWriter, r *http.Request) {
 		"port":         s.deps.Port,
 		"lan_urls":     lanURLs(s.deps.Port),
 	})
+}
+
+// adminQuit stops the local service so the teacher can move the machine.
+func (s *Server) adminQuit(w http.ResponseWriter, r *http.Request) {
+	JSON(w, http.StatusOK, map[string]any{"ok": true, "message": "Playtime 正在退出"})
+	if s.deps.OnQuit != nil {
+		go func() {
+			time.Sleep(300 * time.Millisecond)
+			s.deps.OnQuit()
+		}()
+	}
 }

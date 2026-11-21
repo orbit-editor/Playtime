@@ -21,6 +21,10 @@ export interface Plugin {
   grades: number[];
   /** 后端只返回启用的扩展；兼容显式传 false 的情况。 */
   enabled?: boolean;
+  /** 入口文件的相对路径，缺省按 index.html 打开；后端返回时是 /ext/<id>/<entry> 形式，可直接用。 */
+  entry?: string;
+  /** 图标地址，形如 /ext/<id>/icon.svg。 */
+  icon_url?: string;
 }
 
 export interface ClassStats {
@@ -34,7 +38,10 @@ export interface Bootstrap {
   configured: boolean;
   notice: Notice | null;
   notices_count: number;
-  plugins: Plugin[];
+  /** 新版后端用 games 返回游戏清单。 */
+  games?: Plugin[];
+  /** 旧版字段，保留兼容。 */
+  plugins?: Plugin[];
   stats: ClassStats;
   lan_urls: string[];
   port: number;
