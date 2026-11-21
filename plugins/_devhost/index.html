@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>扩展调试台</title>
+    <style>
+      body { margin: 0; font: 16px/1.6 system-ui, sans-serif; background: #1b2430; color: #eef2f7; }
+      header { padding: 12px 20px; background: #243244; display: flex; gap: 16px; align-items: center; }
+      iframe { width: 100%; height: calc(100vh - 120px); border: 0; background: #fff; }
+      #log { padding: 8px 20px; font: 13px/1.5 ui-monospace, monospace; color: #9fb3c8; height: 40px; overflow: auto; }
+      button { font: inherit; padding: 6px 14px; border-radius: 8px; border: 1px solid #3d5470; background: #2c3e55; color: #eef2f7; cursor: pointer; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <strong>扩展调试台</strong>
+      <label>扩展：<input id="plugin" value="math-sprint" size="18" /></label>
+      <button id="reload">重新加载</button>
+      <span id="event"></span>
+    </header>
+    <iframe id="stage" sandbox="allow-scripts"></iframe>
+    <div id="log"></div>
+    <script src="./host.js"></script>
+  </body>
+</html>

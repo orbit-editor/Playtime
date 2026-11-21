@@ -125,8 +125,8 @@ func (s *Server) adminListStudents(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) adminImportStudents(w http.ResponseWriter, r *http.Request) {
 	var req struct {
-		Text  string `json:"text"`
-		Mode  string `json:"mode"`
+		Text string `json:"text"`
+		Mode string `json:"mode"`
 	}
 	if err := Decode(r, &req); err != nil {
 		Fail(w, http.StatusBadRequest, "bad_request", "请求格式不对")
@@ -178,7 +178,7 @@ func (s *Server) adminPatchStudent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var req struct {
-		Enabled *bool `json:"enabled"`
+		Enabled *bool   `json:"enabled"`
 		Pinyin  *string `json:"pinyin"`
 	}
 	if err := Decode(r, &req); err != nil {
@@ -476,13 +476,13 @@ func (s *Server) adminStats(w http.ResponseWriter, r *http.Request) {
 		weekTotal += row.Flowers
 	}
 	JSON(w, http.StatusOK, map[string]any{
-		"db_bytes":      size,
-		"backup_at":     backupAt,
-		"plugins":       len(plugins),
-		"students":      len(students),
-		"flowers_week":  weekTotal,
-		"version":       s.deps.Version,
-		"port":          s.deps.Port,
-		"lan_urls":      lanURLs(s.deps.Port),
+		"db_bytes":     size,
+		"backup_at":    backupAt,
+		"plugins":      len(plugins),
+		"students":     len(students),
+		"flowers_week": weekTotal,
+		"version":      s.deps.Version,
+		"port":         s.deps.Port,
+		"lan_urls":     lanURLs(s.deps.Port),
 	})
 }

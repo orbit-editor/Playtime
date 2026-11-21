@@ -1,0 +1,274 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  overflow: hidden;
+  background: #e7dfd0;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-lg);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  touch-action: manipulation;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+b,
+strong {
+  font-weight: 800;
+}
+
+small {
+  font-size: 0.55em;
+  font-weight: 700;
+}
+
+svg {
+  display: block;
+  flex: none;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 4px solid rgba(242, 179, 61, 0.95);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--sun-soft);
+  color: var(--ink);
+}
+
+/* ---------- 1920×1080 缩放舞台 ---------- */
+
+.stage-viewport {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 50% -10%, #f6efe3 0%, #e7dfd0 62%, #e2d9c8 100%);
+}
+
+.stage-canvas {
+  position: relative;
+  flex: 0 0 auto;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background: var(--paper);
+  color: var(--ink);
+  transform-origin: center center;
+  box-shadow: 0 0 120px rgba(53, 70, 62, 0.18);
+}
+
+.stage-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+}
+
+.stage-decor {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.stage-decor__dot {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.22;
+}
+
+.stage-decor__dot--one {
+  top: -140px;
+  right: -90px;
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle at 35% 35%, #fbe3b2, #f2b33d 72%);
+}
+
+.stage-decor__dot--two {
+  top: 34%;
+  right: 470px;
+  width: 26px;
+  height: 26px;
+  background: var(--flower);
+  opacity: 0.16;
+}
+
+.stage-decor__dot--three {
+  bottom: -210px;
+  left: -120px;
+  width: 460px;
+  height: 460px;
+  background: radial-gradient(circle at 60% 40%, #d9ebdf, #9ec9ad 75%);
+  opacity: 0.28;
+}
+
+.stage-decor__ring {
+  position: absolute;
+  right: 118px;
+  bottom: 132px;
+  width: 150px;
+  height: 150px;
+  border: 2px dashed rgba(198, 67, 58, 0.16);
+  border-radius: 50%;
+}
+
+/* ---------- 页面骨架 ---------- */
+
+.screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.spin {
+  animation: playtime-spin 1s linear infinite;
+}
+
+@keyframes playtime-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes playtime-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(242, 179, 61, 0);
+  }
+  40% {
+    box-shadow: 0 0 0 12px rgba(242, 179, 61, 0.28);
+  }
+}
+
+@keyframes playtime-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes playtime-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes playtime-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.015);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 4K / 高分屏：去掉阴影和过渡，保流畅 */
+.stage-viewport--quiet .stage-canvas {
+  box-shadow: none;
+}
+
+.stage-viewport--quiet .game-card,
+.stage-viewport--quiet .flower-board,
+.stage-viewport--quiet .leaderboard,
+.stage-viewport--quiet .notice-bar,
+.stage-viewport--quiet .board-panel,
+.stage-viewport--quiet .me-panel,
+.stage-viewport--quiet .placeholder-card,
+.stage-viewport--quiet .sheet-panel {
+  box-shadow: none;
+  border: 1.5px solid var(--line);
+}
+
+.stage-viewport--quiet .game-card,
+.stage-viewport--quiet .gear,
+.stage-viewport--quiet .btn,
+.stage-viewport--quiet .candidate {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

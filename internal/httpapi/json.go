@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"net/http"
 	"strings"
@@ -48,4 +49,9 @@ func clientIP(r *http.Request) string {
 		return strings.TrimSpace(r.RemoteAddr)
 	}
 	return host
+}
+
+// Logf writes a server-side line the teacher never sees.
+func Logf(format string, args ...any) {
+	log.Printf(format, args...)
 }

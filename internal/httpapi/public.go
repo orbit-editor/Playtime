@@ -5,8 +5,6 @@ import (
 	"encoding/binary"
 	"errors"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -14,53 +12,6 @@ import (
 	"github.com/orbit-editor/Playtime/internal/auth"
 	"github.com/orbit-editor/Playtime/internal/store"
 )
-
-// builtinGames are shipped inside the app and always playable.
-func builtinGames() []map[string]any {
-	return []map[string]any{{
-		"id":          "math-sprint",
-		"name":        "口算闯关",
-		"description": "六十秒里，能答对几道口算？",
-		"icon":        "calculator",
-		"entry":       "/ext/math-sprint/index.html",
-		"grades":      []int{1, 2, 3, 4, 5, 6},
-		"builtin":     true,
-		"enabled":     true,
-	}}
-}
-
-func (s *Server) playableGames() ([]map[string]any, error) {
-	games := builtinGames()
-	installed, err := s.deps.Store.ListPlugins()
-	if err != nil {
-		return nil, err
-	}
-	for _, p := range installed {
-		if !p.Enabled {
-			continue
-		}
-		games = append(games, map[string]any{
-			"id":          p.ID,
-			"name":        p.Name,
-			"description": "",
-			"icon":        "puzzle",
-			"entry":       "/ext/" + p.ID + "/" + strings.TrimPrefix(p.Entry, "/"),
-			"grades":      []int{1, 2, 3, 4, 5, 6},
-			"builtin":     false,
-			"enabled":     true,
-		})
-	}
-	return games, nil
-}
-
-func (s *Server) handleGames(w http.ResponseWriter, r *http.Request) {
-	games, err := s.playableGames()
-	if err != nil {
-		Fail(w, http.StatusInternalServerError, "store", "读取游戏失败")
-		return
-	}
-	JSON(w, http.StatusOK, map[string]any{"games": games})
-}
 
 func (s *Server) handleIdentify(w http.ResponseWriter, r *http.Request) {
 	var req struct {
@@ -123,11 +74,6 @@ func (s *Server) handlePlayStart(w http.ResponseWriter, r *http.Request) {
 func (s *Server) pluginPlayable(id string) bool {
 	if id == "" {
 		return false
-	}
-	for _, g := range builtinGames() {
-		if g["id"] == id {
-			return true
-		}
 	}
 	p, err := s.deps.Store.Plugin(id)
 	if err != nil {
@@ -236,13 +182,13 @@ func (s *Server) handleStudentFlowers(w http.ResponseWriter, r *http.Request) {
 	list := make([]map[string]any, 0, len(rewards))
 	for _, rw := range rewards {
 		list = append(list, map[string]any{
-			"id":          rw.ID,
-			"title":       rw.Title,
-			"cost":        rw.Cost,
-			"affordable":  rw.Affordable,
+			"id":           rw.ID,
+			"title":        rw.Title,
+			"cost":         rw.Cost,
+			"affordable":   rw.Affordable,
 			"weekly_limit": rw.WeeklyLimit,
-			"weekly_left": rw.WeeklyLeft,
-			"pending":     rw.Pending,
+			"weekly_left":  rw.WeeklyLeft,
+			"pending":      rw.Pending,
 		})
 	}
 	JSON(w, http.StatusOK, map[string]any{
@@ -348,30 +294,6 @@ func (s *Server) handleJoin(w http.ResponseWriter, r *http.Request) {
 		SameSite: http.SameSiteLaxMode,
 	})
 	http.Redirect(w, r, "/m", http.StatusSeeOther)
-}
-
-// servePluginAsset serves files of installed plugins.
-func (s *Server) servePluginAsset(w http.ResponseWriter, r *http.Request) {
-	id := r.PathValue("id")
-	rest := r.PathValue("rest")
-	if id == "" || strings.Contains(id, "..") || strings.Contains(id, "/") {
-		Fail(w, http.StatusNotFound, "not_found", "没有这个游戏")
-		return
-	}
-	clean := filepath.Clean("/" + rest)
-	full := filepath.Join(s.deps.DataDir, "plugins", id, clean)
-	root := filepath.Join(s.deps.DataDir, "plugins", id)
-	if !strings.HasPrefix(full, root) {
-		Fail(w, http.StatusNotFound, "not_found", "没有这个文件")
-		return
-	}
-	if _, err := os.Stat(full); err != nil {
-		Fail(w, http.StatusNotFound, "not_found", "没有这个文件")
-		return
-	}
-	w.Header().Set("Content-Type", contentTypeOf(full))
-	w.Header().Set("Cache-Control", "no-cache")
-	http.ServeFile(w, r, full)
 }
 
 func randomSeed() int64 {

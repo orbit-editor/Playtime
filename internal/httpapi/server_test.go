@@ -14,6 +14,7 @@ import (
 
 	"github.com/orbit-editor/Playtime/internal/auth"
 	"github.com/orbit-editor/Playtime/internal/hub"
+	"github.com/orbit-editor/Playtime/internal/plugins/builtin"
 	"github.com/orbit-editor/Playtime/internal/store"
 )
 
@@ -38,6 +39,9 @@ func newEnv(t *testing.T) *testEnv {
 	manager := auth.New(st)
 	if err := manager.SetPIN("1234"); err != nil {
 		t.Fatalf("set pin: %v", err)
+	}
+	if err := builtin.Install(st, dir); err != nil {
+		t.Fatalf("install builtin: %v", err)
 	}
 	h := hub.New()
 	server, err := New(Deps{Store: st, Auth: manager, Hub: h, DataDir: dir, Port: 8730, Version: "test"})

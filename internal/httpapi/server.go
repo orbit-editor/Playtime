@@ -16,6 +16,7 @@ import (
 	"github.com/orbit-editor/Playtime/internal/auth"
 	"github.com/orbit-editor/Playtime/internal/hub"
 	"github.com/orbit-editor/Playtime/internal/netinfo"
+	"github.com/orbit-editor/Playtime/internal/plugin"
 	"github.com/orbit-editor/Playtime/internal/store"
 )
 
@@ -32,9 +33,10 @@ type Deps struct {
 
 // Server wires routes, sessions and static files.
 type Server struct {
-	deps  Deps
-	mux   *http.ServeMux
-	token string
+	deps    Deps
+	mux     *http.ServeMux
+	token   string
+	catalog *plugin.Manager
 }
 
 // New builds the router.
@@ -42,7 +44,7 @@ func New(deps Deps) (*Server, error) {
 	if deps.Store == nil || deps.Auth == nil || deps.Hub == nil {
 		return nil, errors.New("httpapi: missing dependency")
 	}
-	s := &Server{deps: deps}
+	s := &Server{deps: deps, catalog: plugin.NewManager(deps.DataDir, catalogURL())}
 	s.token = loadDeviceToken(deps.DataDir)
 	s.routes()
 	return s, nil
@@ -68,6 +70,7 @@ func (s *Server) routes() {
 	mux.HandleFunc("GET /api/students/{id}/flowers", s.handleStudentFlowers)
 	mux.HandleFunc("POST /api/redeem", s.handleRedeem)
 	mux.HandleFunc("GET /api/games", s.handleGames)
+	mux.HandleFunc("GET /api/plugins", s.handlePlugins)
 
 	mux.HandleFunc("POST /api/auth/pin", s.handleLogin)
 	mux.HandleFunc("POST /api/auth/logout", s.handleLogout)
@@ -93,6 +96,12 @@ func (s *Server) routes() {
 	mux.HandleFunc("GET /api/admin/class", s.teacher(s.adminGetClass))
 	mux.HandleFunc("POST /api/admin/class", s.teacher(s.adminSaveClass))
 	mux.HandleFunc("GET /api/admin/stats", s.teacher(s.adminStats))
+	mux.HandleFunc("GET /api/admin/plugins", s.teacher(s.adminListPlugins))
+	mux.HandleFunc("GET /api/admin/catalog", s.teacher(s.adminCatalog))
+	mux.HandleFunc("POST /api/admin/plugins/install", s.teacher(s.adminInstall))
+	mux.HandleFunc("POST /api/admin/plugins/upload", s.teacher(s.adminUpload))
+	mux.HandleFunc("PATCH /api/admin/plugins/{id}", s.teacher(s.adminTogglePlugin))
+	mux.HandleFunc("DELETE /api/admin/plugins/{id}", s.teacher(s.adminUninstallPlugin))
 	mux.HandleFunc("GET /api/admin/backup", s.teacher(s.adminBackup))
 	mux.HandleFunc("POST /api/admin/restore", s.teacher(s.adminRestore))
 
@@ -102,6 +111,7 @@ func (s *Server) routes() {
 	for _, method := range []string{"GET", "POST", "PUT", "PATCH", "DELETE"} {
 		mux.HandleFunc(method+" /api/", notFound)
 	}
+	mux.HandleFunc("GET /ext/{id}", s.servePluginAsset)
 	mux.HandleFunc("GET /ext/{id}/{rest...}", s.servePluginAsset)
 	mux.HandleFunc("GET /m", s.serveSPA)
 	mux.HandleFunc("GET /m/{rest...}", s.serveSPA)
