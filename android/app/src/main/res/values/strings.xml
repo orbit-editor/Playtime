@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Playtime</string>
+
+    <string name="loading_title">课间玩一玩</string>
+    <string name="loading_detail">正在启动 Playtime…</string>
+
+    <string name="start_failed_title">启动失败</string>
+    <string name="start_failed_detail">Playtime 没能启动：%1$s\n可以点下面的按钮重试。</string>
+    <string name="retry">重试</string>
+
+    <string name="webview_old_title">需要升级 WebView</string>
+    <string name="webview_old_detail">这台设备的 WebView 版本太旧（%1$s），Playtime 无法正常显示。\n请升级「Android System WebView」或「Chrome」，也可以请老师帮忙更新系统。</string>
+    <string name="open_store">打开应用商店</string>
+
+    <string name="exit_confirm">再按一次退出</string>
+
+    <string name="notification_channel_name">Playtime 运行状态</string>
+    <string name="notification_channel_description">让 Playtime 在后台保持运行，切换到别的应用再回来时不用重新启动。</string>
+    <string name="notification_title">Playtime 运行中</string>
+    <string name="notification_text">点按回到课间玩一玩</string>
+</resources>

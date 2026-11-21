@@ -2,11 +2,11 @@ package rules
 
 // Flower rules for a finished round.
 const (
-	AccuracyTwo       = 0.80
-	AccuracyThree     = 0.95
+	AccuracyTwo        = 0.80
+	AccuracyThree      = 0.95
 	MinCorrectForThree = 15
-	StudentDailyCap   = 20
-	ClassDailyCap     = 200
+	StudentDailyCap    = 20
+	ClassDailyCap      = 200
 )
 
 // FlowersFor returns the flowers a finished round is worth.

@@ -174,6 +174,11 @@ func (s *Server) handleStudentFlowers(w http.ResponseWriter, r *http.Request) {
 		Fail(w, http.StatusInternalServerError, "store", "读取小红花失败")
 		return
 	}
+	recent, err := s.deps.Store.RecentFlowers(id, 8)
+	if err != nil {
+		Fail(w, http.StatusInternalServerError, "store", "读取小红花失败")
+		return
+	}
 	rewards, err := s.deps.Store.RewardsForStudent(id)
 	if err != nil {
 		Fail(w, http.StatusInternalServerError, "store", "读取奖励失败")
@@ -191,11 +196,20 @@ func (s *Server) handleStudentFlowers(w http.ResponseWriter, r *http.Request) {
 			"pending":      rw.Pending,
 		})
 	}
+	entries := make([]map[string]any, 0, len(recent))
+	for _, entry := range recent {
+		entries = append(entries, map[string]any{
+			"delta": entry.Delta,
+			"reason": entry.Reason,
+			"at":     entry.CreatedAt.Format(time.RFC3339),
+		})
+	}
 	JSON(w, http.StatusOK, map[string]any{
 		"student": map[string]any{"id": student.ID, "sid": student.SID, "name": student.Name},
 		"balance": balance,
 		"today":   today,
 		"rewards": list,
+		"recent":  entries,
 	})
 }
 

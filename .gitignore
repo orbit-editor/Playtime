@@ -18,11 +18,17 @@ internal/plugins/builtin/assets/
 
 # android
 android/.gradle/
+android/.kotlin/
+android/build/
 android/app/build/
 android/local.properties
 android/app/libs/*.aar
+android/app/libs/*.jar
 *.apk
 *.aab
 
 # mac
 .DS_Store
+
+# 验收临时产物
+artifacts/

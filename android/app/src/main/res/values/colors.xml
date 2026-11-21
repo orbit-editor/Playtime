@@ -1,0 +1,11 @@
+<resources>
+    <!-- 与 web/src/styles/tokens.css 保持一致 -->
+    <color name="paper">#FAF6EE</color>
+    <color name="paper_deep">#F3ECDF</color>
+    <color name="ink">#22312B</color>
+    <color name="ink_soft">#35463E</color>
+    <color name="muted">#7C8B84</color>
+    <color name="green">#3F8F63</color>
+    <color name="green_deep">#2E6F4B</color>
+    <color name="sun">#F2B33D</color>
+</resources>

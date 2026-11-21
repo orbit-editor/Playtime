@@ -1,0 +1,12 @@
+{
+  "id": "math-sprint",
+  "name": "口算闯关",
+  "version": "1.0.0",
+  "author": "Playtime",
+  "description": "六十秒里，能答对几道口算？",
+  "grades": [1, 2, 3, 4, 5, 6],
+  "entry": "index.html",
+  "icon": "icon.svg",
+  "scoring": true,
+  "minPlatform": "0.1.0"
+}

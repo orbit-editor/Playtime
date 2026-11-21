@@ -25,9 +25,9 @@ A03,李小花
 
 func TestPinyinInitials(t *testing.T) {
 	cases := map[string]string{
-		"李小明": "lxm",
-		"曾小贤": "zxx",
-		"Anne":  "",
+		"李小明":  "lxm",
+		"曾小贤":  "zxx",
+		"Anne": "",
 		"欧阳":   "oy",
 	}
 	for name, want := range cases {

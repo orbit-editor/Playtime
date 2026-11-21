@@ -304,8 +304,8 @@ func (s *Store) Identify(q string, limit int) ([]IdentifyHit, error) {
 
 	nameCount := map[string]int{}
 	type cand struct {
-		st    Student
-		rank  int
+		st   Student
+		rank int
 	}
 	var cands []cand
 	for rows.Next() {
