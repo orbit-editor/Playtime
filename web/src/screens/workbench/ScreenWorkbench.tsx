@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Database,
@@ -53,6 +53,7 @@ export function ScreenWorkbench() {
 
   const [phase, setPhase] = useState<Phase>('checking');
   const [tab, setTab] = useState<TabKey>('notices');
+  const tabTouchedRef = useRef(false);
   const [classInfo, setClassInfo] = useState<SchoolClass | null>(null);
 
   const [noticeTick, setNoticeTick] = useState(0);
@@ -89,7 +90,10 @@ export function ScreenWorkbench() {
     adminApi
       .classInfo()
       .then((result) => {
-        if (alive) setClassInfo(result.class);
+        if (!alive) return;
+        setClassInfo(result.class);
+        // 第一次用还没有班级时，直接落在「班级」页，先布置教室。
+        if (!result.configured && !tabTouchedRef.current) setTab('class');
       })
       .catch(() => {
         if (alive) setClassInfo(null);
@@ -221,7 +225,10 @@ export function ScreenWorkbench() {
                 type="button"
                 className={'wb-nav__item' + (active ? ' wb-nav__item--active' : '')}
                 aria-current={active ? 'page' : undefined}
-                onClick={() => setTab(item.key)}
+                onClick={() => {
+                  tabTouchedRef.current = true;
+                  setTab(item.key);
+                }}
               >
                 <span className="wb-nav__icon" aria-hidden="true">
                   <Icon size={26} strokeWidth={2.1} />
@@ -255,9 +262,13 @@ export function ScreenWorkbench() {
               </span>
             </div>
             <p className="wb-topbar__sub">
-              {classInfo
-                ? [classInfo.school, gradeLabel(classInfo.grade)].filter((part) => part.trim().length > 0).join(' · ')
-                : '还没有填写班级信息'}
+              {(() => {
+                if (!classInfo) return '还没有填写班级信息';
+                const parts = [classInfo.school];
+                if (classInfo.grade >= 1 && classInfo.grade <= 9) parts.push(gradeLabel(classInfo.grade));
+                const text = parts.filter((part) => part.trim().length > 0).join(' · ');
+                return text.length > 0 ? text : '还没设置年级，先填一下班级信息';
+              })()}
             </p>
           </div>
           <div className="wb-topbar__actions">

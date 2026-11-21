@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AlertCircle, ArrowLeft, Check, Delete, Loader2, Lock, ShieldCheck } from 'lucide-react';
 import { Button } from '../../components/Button';
-import { toApiError } from '../../lib/api';
+import { api, toApiError } from '../../lib/api';
+import type { Bootstrap } from '../../lib/types';
 
 const PIN_LENGTH = 4;
 const DIGITS = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
@@ -20,7 +21,24 @@ export function PinGate({ onLogin, onBackHome }: PinGateProps) {
   const [busy, setBusy] = useState(false);
   const [lockedUntil, setLockedUntil] = useState<number | null>(null);
   const [nowMs, setNowMs] = useState(() => Date.now());
+  const [firstRun, setFirstRun] = useState(false);
   const busyRef = useRef(false);
+
+  // 第一次使用还没有班级时，提示初始密码，否则老师会进不来。
+  useEffect(() => {
+    let alive = true;
+    api
+      .get<Bootstrap>('/api/bootstrap')
+      .then((boot) => {
+        if (alive) setFirstRun(!boot.configured);
+      })
+      .catch(() => {
+        if (alive) setFirstRun(false);
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   const lockLeft = lockedUntil === null ? 0 : Math.max(0, Math.ceil((lockedUntil - nowMs) / 1000));
   const locked = lockedUntil !== null && lockLeft > 0;
@@ -210,6 +228,9 @@ export function PinGate({ onLogin, onBackHome }: PinGateProps) {
         </div>
 
         <p className="pin-gate__hint">可以用下面的键盘，也可以直接用键盘输入</p>
+        {firstRun ? (
+          <p className="pin-gate__first">第一次使用，初始密码是 1234，进来后记得在「数据」页改掉。</p>
+        ) : null}
       </div>
     </div>
   );

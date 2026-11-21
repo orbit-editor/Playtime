@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Clock, Gamepad2, RefreshCw, WifiOff } from 'lucide-react';
+import { ArrowRight, Clock, Gamepad2, RefreshCw, WifiOff, Wrench } from 'lucide-react';
 import { FlowerBoard } from '../components/FlowerBoard';
 import { FlowerMark } from '../components/FlowerMark';
 import { GameWall } from '../components/GameWall';
@@ -27,6 +27,25 @@ function useNow(): Date {
     return () => window.clearInterval(timer);
   }, []);
   return now;
+}
+
+/** 第一次用还没有班级时，直接把老师引到布置教室。 */
+function SetupBar({ onOpen }: { onOpen: () => void }) {
+  return (
+    <section className="setup-bar" aria-label="第一次使用">
+      <span className="setup-bar__icon" aria-hidden="true">
+        <Wrench size={24} strokeWidth={2.1} />
+      </span>
+      <div className="setup-bar__copy">
+        <p className="setup-bar__title">第一次用？先把教室布置好</p>
+        <p className="setup-bar__hint">填好班级、导入名单，孩子们就能认领小红花开始玩了。初始密码 1234。</p>
+      </div>
+      <button type="button" className="setup-bar__action" onClick={onOpen}>
+        去布置教室
+        <ArrowRight size={20} strokeWidth={2.2} aria-hidden="true" />
+      </button>
+    </section>
+  );
 }
 
 function OfflineBar({ loading, onRetry }: { loading: boolean; onRetry: () => void }) {
@@ -168,6 +187,8 @@ export function ScreenHome() {
 
       {degraded ? (
         <OfflineBar loading={bootstrapResource.loading} onRetry={refreshBootstrap} />
+      ) : !bootstrap?.configured ? (
+        <SetupBar onOpen={() => navigate('/admin')} />
       ) : (
         <NoticeBar notice={notice} count={noticesCount} />
       )}

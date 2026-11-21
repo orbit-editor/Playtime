@@ -172,3 +172,68 @@
 .offline-bar__retry {
   flex: none;
 }
+
+/* 第一次使用：布置教室引导条 */
+.setup-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0 48px;
+  padding: 16px 20px;
+  border-radius: 22px;
+  background: var(--green-soft);
+  border: 1px solid rgba(63, 143, 99, 0.22);
+}
+
+.setup-bar__icon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  flex: none;
+  border-radius: 16px;
+  background: #fff;
+  color: var(--green-deep);
+}
+
+.setup-bar__copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.setup-bar__title {
+  color: var(--ink);
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.setup-bar__hint {
+  margin-top: 2px;
+  color: var(--muted-strong);
+  font-size: 15px;
+}
+
+.setup-bar__action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  height: 56px;
+  padding: 0 22px;
+  border: none;
+  border-radius: 999px;
+  background: var(--green);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.setup-bar__action:hover {
+  background: var(--green-deep);
+}
+
+.setup-bar__action:active {
+  transform: scale(0.98);
+}

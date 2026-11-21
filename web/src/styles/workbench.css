@@ -1996,3 +1996,17 @@
     transition: none;
   }
 }
+
+/* 密码门：第一次使用提示 */
+.pin-gate__first {
+  margin-top: 6px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: var(--sun-soft);
+  color: var(--sun-deep);
+  max-width: 420px;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.6;
+  text-align: center;
+}

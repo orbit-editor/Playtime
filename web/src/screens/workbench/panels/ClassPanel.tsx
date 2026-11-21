@@ -31,7 +31,7 @@ interface ClassForm {
   school: string;
 }
 
-const EMPTY_FORM: ClassForm = { name: '', grade: 3, school: '' };
+const EMPTY_FORM: ClassForm = { name: '', grade: 0, school: '' };
 
 export interface ClassPanelProps {
   classTick: number;
@@ -63,7 +63,7 @@ export function ClassPanel({ classTick, studentTick, onClassSaved }: ClassPanelP
   useEffect(() => {
     if (!classInfo.data || dirty) return;
     const current = classInfo.data.class;
-    const grade = current.grade >= 1 && current.grade <= 9 ? current.grade : 3;
+    const grade = current.grade >= 1 && current.grade <= 9 ? current.grade : 0;
     setForm({ name: current.name ?? '', grade, school: current.school ?? '' });
   }, [classInfo.data, dirty]);
 
@@ -76,6 +76,10 @@ export function ClassPanel({ classTick, studentTick, onClassSaved }: ClassPanelP
     const name = form.name.trim();
     if (name.length === 0) {
       toast.show('先填写班级名称', 'error');
+      return;
+    }
+    if (form.grade < 1 || form.grade > 9) {
+      toast.show('先选一下年级', 'error');
       return;
     }
     setSaving(true);
@@ -188,6 +192,11 @@ export function ClassPanel({ classTick, studentTick, onClassSaved }: ClassPanelP
             value={form.grade}
             onChange={(event) => updateField('grade', Number(event.target.value))}
           >
+            {form.grade === 0 ? (
+              <option value={0} disabled>
+                请选择年级
+              </option>
+            ) : null}
             {GRADES.map((grade) => (
               <option key={grade} value={grade}>
                 {gradeLabel(grade)}
