@@ -38,21 +38,28 @@ func Open(dataDir string) (*Store, error) {
 		return nil, fmt.Errorf("create data dir: %w", err)
 	}
 
-	dsn := "file:" + filepath.Join(abs, "playtime.db") +
-		"?_pragma=busy_timeout(5000)&_pragma=journal_mode(WAL)&_pragma=foreign_keys(1)&_pragma=synchronous(NORMAL)"
-	db, err := sql.Open("sqlite", dsn)
-	if err != nil {
-		return nil, fmt.Errorf("open sqlite: %w", err)
+	s := &Store{dataDir: abs, path: filepath.Join(abs, "playtime.db"), now: time.Now}
+	if err := s.reopen(); err != nil {
+		return nil, err
 	}
-	db.SetMaxOpenConns(1)
-
-	s := &Store{db: db, dataDir: abs, path: filepath.Join(abs, "playtime.db"), now: time.Now}
-
 	if err := s.applySchema(); err != nil {
-		_ = db.Close()
+		_ = s.db.Close()
 		return nil, err
 	}
 	return s, nil
+}
+
+// reopen swaps in a fresh connection to the database file on disk.
+func (s *Store) reopen() error {
+	dsn := "file:" + s.path +
+		"?_pragma=busy_timeout(5000)&_pragma=journal_mode(WAL)&_pragma=foreign_keys(1)&_pragma=synchronous(NORMAL)"
+	db, err := sql.Open("sqlite", dsn)
+	if err != nil {
+		return fmt.Errorf("open sqlite: %w", err)
+	}
+	db.SetMaxOpenConns(1)
+	s.db = db
+	return nil
 }
 
 func (s *Store) applySchema() error {
